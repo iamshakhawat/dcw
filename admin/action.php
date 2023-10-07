@@ -7,7 +7,7 @@ use App\classes\Auth;
 $auth = new Auth();
 
 // Register Code Block
-if (isset($_POST) && $_POST['action'] == "regform") {
+if (isset($_POST['action']) && $_POST['action'] == "regform") {
     $name = $_POST['name'];
     $email = $_POST['email'];
     $password = $_POST['password'];
@@ -48,11 +48,11 @@ if (isset($_POST['action']) && $_POST['action'] == "loginform") {
         $dbpass = $auth->getRow($email)['password'];
         if (password_verify($password, $dbpass)) {
             if ($remember == "on") {
-                $_SESSION['loggedin'] = $email;
+                $_SESSION['login'] = $email;
                 setcookie("login", $email, time() + (86400 * 7));
                 echo "login Success";
             } else {
-                $_SESSION['loggedin'] = $email;
+                $_SESSION['login'] = $email;
                 echo "login Success";
             }
         } else {
@@ -61,5 +61,46 @@ if (isset($_POST['action']) && $_POST['action'] == "loginform") {
     } else {
         // echo "Email Not Exist!";
         echo "Wrong Information";
+    }
+}
+
+
+
+
+// Forget Password
+if (isset($_POST['action']) && $_POST['action'] == "resetpass") {
+    $email = $_POST['email'];
+    $token = md5(uniqid() . time() . rand(1, 10000) . uniqid());
+    $row = $auth->checkEmail($email);
+    if ($row == 1) {
+        $subject = "Verify Your Email";
+        $body = "
+        Please verify your email Account by <a href='http://localhost/dcw/admin/verify.php?token=" . $token . "'>Click here</a><br>
+            <a href='http://localhost/dcw/admin/verify.php?token=" . $token . "'>Click here</a>
+        ";
+        if (mail($email, $subject, $body)) {
+            if ($auth->resetMail($email, $token)) {
+                echo "check";
+            } else {
+                echo "Failed to reset email.";
+            }
+        } else {
+            echo "Failed to reset email.";
+        }
+    } else {
+        echo "You are not Registered!";
+    }
+}
+
+
+// Update new password
+if (isset($_POST['action']) && $_POST['action'] == "updatenewpass") {
+    $password = $_POST['password'];
+    $token = $_SESSION['newpass'];
+    $password = password_hash($password, PASSWORD_BCRYPT);
+    if ($auth->updatePassword($password, $token)) {
+        echo "<script>alert('Password Update Successfully');window.location = 'login.php'</script>";
+    } else {
+        echo "<script>alert('Something went wrong..');window.location = 'login.php'</script>";
     }
 }

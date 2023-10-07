@@ -1,3 +1,11 @@
+<?php
+session_start();
+
+if (isset($_SESSION['login']) || isset($_COOKIE['login'])) {
+    header("location:dashboard.php");
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -19,7 +27,7 @@
             <div class="col-lg-6 my-auto">
                 <div class="card">
                     <form id="loginform">
-                        <h2 class="text-center">Admin Login</h2>
+                        <h2 class="text-center p-3">Admin Login</h2>
                         <hr class="mt-1">
                         <div class="form-group px-3 mb-3">
                             <label>Email:</label>
@@ -44,7 +52,7 @@
                                 <input type="checkbox" name="remember" class="custom-control-input" id="customControlAutosizing">
                                 <label class="custom-control-label" for="customControlAutosizing">Remember Me</label>
                             </div>
-                            <a href="#" class=" text-decoration-none">Forget Password?</a>
+                            <a href="./forgot.php" class=" text-decoration-none">Forget Password?</a>
                         </div>
                         <button type="submit" value="adminLogin" name="action" class="btn btn-primary btn-hover rounded-0 d-block  mx-auto my-3 loginbtn
                         ">Login</button>

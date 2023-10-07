@@ -1,3 +1,11 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['login'])) {
+    header("location:login.php");
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -16,7 +24,15 @@
 
     <div class="container">
         <div class="row">
+            <?php
+            if (mail("shakhawat9083@gmail.com", "Testing purpose", "Hey What'sapp")) {
+                echo "Send Success";
+            } else {
+                echo "failed";
+            }
 
+            ?>
+            <a href="logout.php">Logout</a>
         </div>
     </div>
 
